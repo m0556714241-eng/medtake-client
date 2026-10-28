@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography"
 import type { Dose } from "../types"
 import Chip from "@mui/material/Chip"
 import { doseStatusLabels } from "../utils/labels"
+import FormIcon from "./FormIcon" // נוסף: אייקון לפי צורת התרופה
 import { formatTime, partOfDay } from "../utils/dates"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { markIntake, unmarkIntake } from "../api/intakes"
@@ -59,7 +60,11 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                     : dose.status === 'missed' ? 'bg-[#FFF4E8] shadow-[inset_0_0_0_2px_#F5B98A]'
                         : 'bg-white shadow-[inset_0_0_0_1px_#E3ECE7]'
             }`}>
-                <Typography sx={{ fontWeight: 800, fontSize: 22, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>{formatTime(dose.scheduledAt)}</Typography>
+                {/* נוסף: אייקון הצורה ליד השעה */}
+                <div className="flex w-full items-center justify-between gap-2">
+                    <Typography sx={{ fontWeight: 800, fontSize: 22, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>{formatTime(dose.scheduledAt)}</Typography>
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/70"><FormIcon form={dose.form} size={20} /></span>
+                </div>
                 <Typography sx={{ fontWeight: 800 }}>{dose.drugName}</Typography>
                 <Typography variant="body2" color="text.secondary">{dose.dosage}</Typography>
                 <div className="mt-1 flex flex-wrap gap-2">
@@ -80,6 +85,8 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                 <Typography sx={{ fontSize: 14, color: '#5B6E70' }}>{partOfDay(dose.scheduledAt)}</Typography>
             </div>
             <div className="w-px self-stretch bg-[#E3ECE7]" />
+            {/* נוסף: אייקון הצורה ליד שם התרופה */}
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-soft"><FormIcon form={dose.form} size={26} /></span>
             <div className="min-w-0 flex-1">
                 <Typography sx={{ fontWeight: 800, fontSize: 22, lineHeight: 1.2 }}>{dose.drugName}</Typography>
                 <Typography color="text.secondary">{dose.dosage}</Typography>

@@ -14,6 +14,7 @@ import { changeStatus, deletePrescription } from "../api/prescriptions"
 import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import RefillStock from "./RefillStock"
+import FormIcon from "./FormIcon"
 import ConfirmDialog from "./ConfirmDialog"
 
 interface PrescriptionCardProps {
@@ -62,7 +63,7 @@ const PrescriptionCard = ({ Prescription }: PrescriptionCardProps) => {
             <CardContent className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                     <span className="grid h-[50px] w-[50px] shrink-0 place-items-center rounded-2xl bg-primary-soft">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#214E48" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-35 12 12)"></rect><line x1="9.2" y1="8" x2="14.8" y2="16"></line></svg>
+                        <FormIcon form={Prescription.form} size={26} /> {/* שונה: אייקון לפי הצורה במקום כמוסה קבועה */}
                     </span>
                     <div className="min-w-0 flex-1">
                         <Typography variant="h6">{Prescription.drugName}</Typography>

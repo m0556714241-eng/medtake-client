@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 logout()
             }
         }).finally(()=>setIsLoading(false))
+        // רץ פעם אחת בטעינת האתר, בכוונה – אם token היה ברשימה, getMe היה נקרא שוב אחרי כל login
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', '_to_delete']), // תיקיית הגיבויים – לא חלק מהפרויקט
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
