@@ -4,6 +4,22 @@ MedTake היא אפליקציית ווב לניהול תרופות של מטופ
 **המטפל** (למשל בן משפחה) מנהל את המטופלים ואת המרשמים שלהם, ו**המטופל** רואה מה צריך לקחת היום ומסמן מה כבר לקח.
 שניהם רואים את אותו מצב בזמן אמת – מה נלקח, מה פוספס, ואיזו תרופה עומדת להיגמר.
 
+## קישורים
+
+| מה | כתובת |
+| --- | --- |
+| האתר | https://medtake-client.onrender.com |
+| השרת (API) | https://medtake-server.onrender.com/api |
+| תיעוד ה-API (Swagger) | https://medtake-server.onrender.com/api-docs |
+| קוד הלקוח | https://github.com/m0556714241-eng/medtake-client |
+| קוד השרת | https://github.com/m0556714241-eng/medtake-server |
+
+> השרת נמצא בתוכנית החינמית של Render ו"נרדם" כשאין בו שימוש – הבקשה הראשונה אחרי הפסקה יכולה לקחת 30–60 שניות.
+
+**כניסה מהירה לבדיקה** (סיסמה לכולם: `Medtake123`):
+- מטפלת: `rachel@medtake.dev`
+- מטופל: `avraham@medtake.dev` (המטופל של רחל)
+
 ## שני תפקידים
 
 ### מטפל (caregiver)
