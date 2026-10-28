@@ -4,7 +4,8 @@ import { getPatient } from "../api/patients"
 import Button from "@mui/material/Button"
 import PatientProfile from "../components/PatientProfile"
 import DailyMedicine from "../components/DailyMedicine"
-import { todayString } from "../utils/dates"
+import { formatDayMonth, todayString } from "../utils/dates"
+import AddIcon from "@mui/icons-material/Add"
 import { useState } from "react"
 import type { PrescriptionFilters } from "../types/prescription"
 import PrescriptionList from "../components/PrescriptionList"
@@ -37,13 +38,30 @@ const PatientDetails = () => {
 
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
+            {/* עיצוב: קישור חזרה, פרופיל, "המנות של היום" בכרטיס, ומרשמים עם כותרת */}
+            {/* עיצוב: כפתור חזרה בולט – גלולה לבנה עם צל, ובמעבר עכבר ירוק בהיר */}
+            <Link to="/manager" className="flex items-center gap-2 self-start rounded-full bg-white px-5 py-2.5 font-bold text-primary-dark no-underline shadow-[0_10px_24px_-14px_rgba(33,78,72,.55)] transition-colors hover:bg-primary-soft">
+                <span aria-hidden="true">→</span> חזרה לכל המטופלים
+            </Link>
             <PatientProfile patient={patient}></PatientProfile>
-            <DailyMedicine patientId={patient.id} date={todayString()} canMark={false}></DailyMedicine>
-            <Button variant="contained" onClick={() => { setAddPrescriptionOpen(true) }} className="self-start">הוספת מרשם</Button>
-            <FiltersPrescription filters={filters} onFiltersChange={setFilters}></FiltersPrescription>
-            <PrescriptionList patientId={patient.id} filters={filters} ></PrescriptionList>
-            <AppDialog open={addPrescriptionOpen} title="הוספת מרשם" onClose={()=>setAddPrescriptionOpen(false)}>
+
+            <section className="flex flex-col gap-4 rounded-[30px] border border-white/90 bg-white/80 p-6 shadow-[0_20px_40px_-30px_rgba(33,78,72,.45)]">
+                {/* עיצוב: הכותרת עברה לתוך DailyMedicine, שם כבר מחושב כמה נלקחו */}
+                <DailyMedicine patientId={patient.id} date={todayString()} canMark={false}
+                    title={`היום, ${new Date().toLocaleDateString('he-IL', { weekday: 'long' })} ${formatDayMonth(todayString())}`}></DailyMedicine>
+            </section>
+
+            <section className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <h2 className="m-0 text-[24px] font-extrabold">מרשמים</h2>
+                    <Button variant="contained" startIcon={<AddIcon />} sx={{ minHeight: 48, px: 3, fontWeight: 700 }} onClick={() => { setAddPrescriptionOpen(true) }}>הוספת מרשם</Button>
+                </div>
+                <FiltersPrescription filters={filters} onFiltersChange={setFilters}></FiltersPrescription>
+                <PrescriptionList patientId={patient.id} filters={filters} ></PrescriptionList>
+            </section>
+
+            <AppDialog open={addPrescriptionOpen} title="הוספת מרשם" subtitle={`עבור ${patient.fullName}`} onClose={()=>setAddPrescriptionOpen(false)}>
                 <AddMedicine onClose={()=>setAddPrescriptionOpen(false)} patientId={patient.id}></AddMedicine>
             </AppDialog>
         </div>

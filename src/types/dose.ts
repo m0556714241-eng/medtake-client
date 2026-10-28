@@ -29,5 +29,4 @@ export interface DoseFilters {
   from: string; // YYYY-MM-DD
   to: string; // YYYY-MM-DD
   patientId?: string; // חובה כשהמשתמש מטפל
-  status?: DoseStatus;
 }

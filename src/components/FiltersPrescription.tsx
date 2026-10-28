@@ -1,10 +1,10 @@
-import Paper from "@mui/material/Paper"
 import type { PrescriptionFilters, PrescriptionForm, PrescriptionStatus } from "../types"
 import { prescriptionStatusLabels, prescriptionStatusShapes } from "../utils/labels"
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import InputAdornment from "@mui/material/InputAdornment"
 import SearchIcon from "@mui/icons-material/Search"
+import { pillFieldSx } from "../utils/styles" // עיצוב: אותו סגנון גלולה כמו בעמוד הניהול
 
 interface FiltersPrescriptionProps {
     filters: PrescriptionFilters
@@ -40,13 +40,15 @@ const FiltersPrescription = ({ filters, onFiltersChange }: FiltersPrescriptionPr
 
     }
     return (
-        <Paper elevation={0} className="flex flex-wrap items-center gap-4 p-4">
+        // עיצוב: בלי מסגרת מסביב – חיפוש בגלולה לבנה רחבה, ושלוש רשימות נפתחות בגלולות קטנות
+        <div className="flex flex-wrap items-center gap-3">
             <TextField
                 placeholder="חיפוש לפי שם תרופה…"
                 aria-label="חיפוש לפי שם תרופה"
                 type="search"
-                size="small"
                 value={filters.search ?? ''}
+                className="min-w-60 flex-[1_1_280px]"
+                sx={pillFieldSx}
                 onChange={e =>
                     onFiltersChange({
                         ...filters,
@@ -66,14 +68,15 @@ const FiltersPrescription = ({ filters, onFiltersChange }: FiltersPrescriptionPr
 
             <TextField
                 select
-                label="סטטוס"
-                size="small"
+                aria-label="סטטוס"
                 value={filters.status ?? ""}
                 onChange={e => onFiltersChange({
                     ...filters,
                     status: (e.target.value || undefined) as PrescriptionStatus | undefined,
                 })}
-                className="min-w-36"
+                className="min-w-40"
+                sx={pillFieldSx}
+                slotProps={{ select: { displayEmpty: true, renderValue: value => `סטטוס: ${prescriptionStatusLabels[value as PrescriptionStatus] ?? 'הכול'}` } }}
             >
                 <MenuItem value="">הכול</MenuItem>
                 {Object.entries(prescriptionStatusLabels).map(([value, label]) => (
@@ -82,14 +85,15 @@ const FiltersPrescription = ({ filters, onFiltersChange }: FiltersPrescriptionPr
             </TextField>
             <TextField
                 select
-                label="צורה"
-                size="small"
+                aria-label="צורה"
                 value={filters.form ?? ""}
                 onChange={e => onFiltersChange({
                     ...filters,
                     form: (e.target.value || undefined) as PrescriptionForm | undefined,
                 })}
-                className="min-w-36"
+                className="min-w-40"
+                sx={pillFieldSx}
+                slotProps={{ select: { displayEmpty: true, renderValue: value => `צורה: ${prescriptionStatusShapes[value as PrescriptionForm] ?? 'הכול'}` } }}
             >
                 <MenuItem value="">הכול</MenuItem>
                 {Object.entries(prescriptionStatusShapes).map(([value, label]) => (
@@ -100,11 +104,12 @@ const FiltersPrescription = ({ filters, onFiltersChange }: FiltersPrescriptionPr
 
             <TextField
                 select
-                label="מיון"
-                size="small"
+                aria-label="מיון"
                 value={currentSort?.value ?? 'name-asc'}
                 onChange={e => handleSortChange(e.target.value)}
-                className="min-w-48"
+                className="min-w-52"
+                sx={pillFieldSx}
+                slotProps={{ select: { renderValue: value => `מיון: ${sortOptions.find(o => o.value === value)?.label ?? ''}` } }}
             >
                 {sortOptions.map(
                     o => (
@@ -113,7 +118,7 @@ const FiltersPrescription = ({ filters, onFiltersChange }: FiltersPrescriptionPr
                 )}
 
             </TextField>
-        </Paper>
+        </div>
     )
 }
 

@@ -5,15 +5,15 @@ import MenuItem from "@mui/material/MenuItem"
 import { dayLabels, prescriptionStatusShapes } from "../utils/labels"
 import Button from "@mui/material/Button"
 import FormHelperText from "@mui/material/FormHelperText"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Checkbox from "@mui/material/Checkbox"
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
-import DeleteIcon from "@mui/icons-material/Delete"
+import CloseIcon from "@mui/icons-material/Close"
+import FormSection from "./FormSection"
 import AddIcon from "@mui/icons-material/Add"
 import { useMutation, useQueryClient } from "@tanstack/react-query" // תוקן: הוסר useQuery שכבר לא בשימוש
 import { useState } from "react"
 import { createPrescription, updatePrescription } from "../api/prescriptions" // תוקן: הוסר getPrescription שכבר לא בשימוש
+import { useSnackbar } from "notistack"
 import axios from "axios"
 type amountFieldsName = 'unitsPerDose' | 'stockQuantity' | 'lowStockThreshold' | 'missedAfterMinutes'
 interface amountFieldsConfig {
@@ -83,6 +83,7 @@ const AddMedicine = ({ onClose, patientId, prescription }: AddMedicineProps) => 
 
     const queryClient = useQueryClient()
     const [serverError, setServerError] = useState<string | null>(null)
+    const { enqueueSnackbar } = useSnackbar()
     const addMutation = useMutation({
         mutationFn: (data: PrescriptionFormValues) =>
             prescription ? updatePrescription(prescription.id, data)
@@ -108,6 +109,7 @@ const AddMedicine = ({ onClose, patientId, prescription }: AddMedicineProps) => 
                 queryClient.invalidateQueries({ queryKey: ['patients'] }),
                 queryClient.invalidateQueries({ queryKey: ['alerts'] }),
             ])
+            if (isEdit) enqueueSnackbar('המרשם עודכן', { variant: 'success' })
             onClose()
         }
         catch (error) {
@@ -186,6 +188,108 @@ const AddMedicine = ({ onClose, patientId, prescription }: AddMedicineProps) => 
                 )}
             />
 
+            {/* עיצוב: הימים, השעות והתאריכים בקטע ירקרק אחד "מתי לוקחים" – כמו בהדמיה */}
+            <FormSection title="מתי לוקחים">
+            <Controller
+                name="schedule.days"
+                control={control}
+                rules={{
+                    validate: value => value.length > 0 || 'יש לבחור לפחות יום אחד',
+                }}
+                render={({ field }) => (
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between gap-2">
+                            <Typography sx={{ fontWeight: 500 }}>ימים</Typography>
+                            <Button type="button" size="small" variant="soft" onClick={() => field.onChange(field.value.length === 7 ? [] : [0, 1, 2, 3, 4, 5, 6])} disabled={isSubmitting}>{field.value.length === 7 ? 'ניקוי' : 'כל יום'}</Button>
+                        </div>
+                        {/* שונה: עיגולים מלאים במקום תיבות סימון – אותה לוגיקה, עכשיו ב-onClick */}
+                        <div className="flex flex-wrap gap-2">
+                            {dayLabels.map((label, index) => {
+                                const isOn = field.value.includes(index)
+                                return (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        aria-pressed={isOn}
+                                        disabled={isSubmitting}
+                                        onClick={() =>
+                                            field.onChange(
+                                                isOn ?
+                                                    field.value.filter(d => d != index) :
+                                                    [...field.value, index].sort((a, b) => a - b)
+                                            )
+                                        }
+                                        className={`grid h-12 w-12 cursor-pointer place-items-center rounded-full border-0 font-[inherit] text-base ${isOn
+                                            ? 'bg-gradient-to-br from-primary to-[#2C6358] font-extrabold text-white shadow-[0_6px_14px_-8px_rgba(57,121,107,.8)]'
+                                            : 'bg-white font-bold text-muted shadow-[inset_0_0_0_1px_#D9E5DF]'}`}
+                                    >
+                                        {label}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                        {errors.schedule?.days && (
+                            <FormHelperText error>{errors.schedule.days.message}</FormHelperText>
+                        )}
+                    </div>
+                )}
+            />
+            <div className="flex flex-col gap-2">
+                <Typography sx={{ fontWeight: 500 }}>שעות</Typography>
+                {/* עיצוב: השעות בשורה אחת זו ליד זו, עם X קטן, ובסוף "+ שעה נוספת" */}
+                <div className="flex flex-wrap items-start gap-3">
+                {
+                    fields.map((item, index) => (
+                        <div key={item.id} className="flex items-start gap-1">
+                            <Controller
+                                name={`schedule.times.${index}.value`}
+                                control={control}
+                                rules={{
+                                    required: 'יש לבחור שעה',
+                                    validate: value =>
+                                        getValues('schedule.times').filter(t => t.value === value).length === 1
+                                        || 'השעה הזו כבר קיימת',
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        type="time"
+                                        size="small"
+                                        label={`שעה ${index + 1}`}
+                                        error={!!errors.schedule?.times?.[index]?.value}
+                                        helperText={errors.schedule?.times?.[index]?.value?.message}
+                                        slotProps={{ inputLabel: { shrink: true } }}
+                                        className="w-36"
+                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#FFFFFF" } }}
+                                        disabled={isSubmitting}
+                                    />
+                                )}
+                            />
+                            <IconButton
+                                aria-label="מחיקת שעה"
+                                size="small"
+                                onClick={() => remove(index)}
+                                disabled={fields.length == 1 || isSubmitting}
+                                sx={{ mt: 0.75, bgcolor: '#FFFFFF' }}>
+                                <CloseIcon fontSize="small" /> {/* שונה: X קטן במקום פח */}
+                            </IconButton>
+                        </div>
+                    )
+
+                    )
+                }
+                {/* שונה: גלולה מקווקוות "+ שעה נוספת" – כמו בהדמיה, כדי שיהיה ברור שזה מקום להוסיף */}
+                <Button
+                    type="button"
+                    startIcon={<AddIcon />}
+                    onClick={() => append({ value: '' })}
+                    disabled={isSubmitting}
+                    sx={{ minHeight: 40, px: 2, fontWeight: 700, color: 'primary.dark', border: '2px dashed #9CC2B4', '&:hover': { bgcolor: '#FFFFFF', borderColor: '#39796B' } }}
+                >
+                    שעה נוספת
+                </Button>
+                </div>
+            </div>
             <div className="flex flex-wrap gap-4">
                 <Controller
                     name="startDate"
@@ -227,98 +331,7 @@ const AddMedicine = ({ onClose, patientId, prescription }: AddMedicineProps) => 
                     )}
                 />
             </div>
-            <Controller
-                name="schedule.days"
-                control={control}
-                rules={{
-                    validate: value => value.length > 0 || 'יש לבחור לפחות יום אחד',
-                }}
-                render={({ field }) => (
-                    <div>
-                        <Typography variant="body2" color="text.secondary">ימים בשבוע</Typography>
-                        <Button type="button" size="small" onClick={() => field.onChange(field.value.length === 7 ? [] : [0, 1, 2, 3, 4, 5, 6])} disabled={isSubmitting}>{field.value.length === 7 ? 'ניקוי' : 'כל יום'}</Button>
-                        <div className="flex flex-wrap gap-1">
-                            {dayLabels.map((label, index) => (
-                                <FormControlLabel
-                                    key={index}
-                                    label={label}
-                                    control={
-                                        <Checkbox
-                                            size="small"
-                                            checked={field.value.includes(index)}
-                                            onChange={() =>
-                                                field.onChange(
-                                                    field.value.includes(index) ?
-                                                        field.value.filter(d => d != index) :
-                                                        [...field.value, index].sort((a, b) => a - b)
-                                                )
-
-
-
-
-                                            }
-                                            disabled={isSubmitting}
-                                        />
-                                    }
-                                />
-                            ))}
-                        </div>
-                        {errors.schedule?.days && (
-                            <FormHelperText error>{errors.schedule.days.message}</FormHelperText>
-                        )}
-                    </div>
-                )}
-            />
-            <div className="flex flex-col gap-2">
-                <Typography variant="body2" color="text.secondary">שעות</Typography>
-                {
-                    fields.map((item, index) => (
-                        <div key={item.id} className="flex items-start gap-2">
-                            <Controller
-                                name={`schedule.times.${index}.value`}
-                                control={control}
-                                rules={{
-                                    required: 'יש לבחור שעה',
-                                    validate: value =>
-                                        getValues('schedule.times').filter(t => t.value === value).length === 1
-                                        || 'השעה הזו כבר קיימת',
-                                }}
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        type="time"
-                                        size="small"
-                                        label={`שעה ${index + 1}`}
-                                        error={!!errors.schedule?.times?.[index]?.value}
-                                        helperText={errors.schedule?.times?.[index]?.value?.message}
-                                        slotProps={{ inputLabel: { shrink: true } }}
-                                        className="min-w-40"
-                                        disabled={isSubmitting}
-                                    />
-                                )}
-                            />
-                            <IconButton
-                                aria-label="מחיקת שעה"
-                                onClick={() => remove(index)}
-                                disabled={fields.length == 1 || isSubmitting}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </div>
-                    )
-
-                    )
-                }
-                <Button
-                    type="button"
-                    size="small"
-                    startIcon={<AddIcon />}
-                    onClick={() => append({ value: '' })}
-                    className="self-start"
-                    disabled={isSubmitting}
-                >
-                    הוספת שעה
-                </Button>
-            </div>
+            </FormSection>
             <div className="grid gap-4 sm:grid-cols-2">
                 {amountFields.map(
                     config => (
@@ -377,21 +390,24 @@ const AddMedicine = ({ onClose, patientId, prescription }: AddMedicineProps) => 
 
             {serverError && <p className="text-error">{serverError}</p>}
 
-            <div className="flex justify-end gap-2">
-                <Button
-                    type="button"
-                    variant="outlined"
-                    onClick={onClose}
-                    disabled={isSubmitting}
-                >
-                    ביטול
-                </Button>
+            {/* עיצוב: כמו בהדמיה – קו מפריד, "שמירה" ראשון (מימין) ו"ביטול" כגלולה אפורה-בהירה */}
+            <div className="mt-2 flex flex-wrap gap-3 border-0 border-t border-solid border-[#EDF2EF] pt-5">
                 <Button
                     type="submit"
                     variant="contained"
                     disabled={isSubmitting}
+                    sx={{ minHeight: 52, px: 4, fontSize: 17 }}
                 >
                     {isSubmitting ? (isEdit ? 'שומר...' : 'מוסיף...') : (isEdit ? 'שמירה' : 'הוספה')}
+                </Button>
+                <Button
+                    type="button"
+                    variant="soft"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                    sx={{ minHeight: 52, px: 3 }}
+                >
+                    ביטול
                 </Button>
             </div>
         </form>

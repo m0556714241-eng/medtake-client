@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
+/* עיצוב: אותם צבעים כמו בערכת הנושא של MUI ב-main.tsx (ההדמיה "רך ומודרני") */
 @theme {
-  --color-primary: #0E7A6F;
-  --color-error: #B4231F;
-  --color-warning: #8A5200;
+  --color-primary: #39796B;
+  --color-primary-dark: #214E48;
+  --color-primary-soft: #DDEBE3;
+  --color-ink: #16242A;
+  --color-muted: #5B6E70;
+  --color-error: #9A3412;
+  --color-warning: #C2410C;
   --font-sans: 'Heebo', system-ui, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -15,13 +20,23 @@
 
 :root {
   font-family: var(--font-sans);
-  line-height: 1.5;
-  color: #1f2937;
-  background: #fff;
+  line-height: 1.55;
+  color: #16242A;
+  background: #F5F8F5;
 }
 
 body {
   margin: 0;
   min-height: 100svh;
   text-align: start;
+  background: linear-gradient(170deg, #F5F8F5 0%, #E9F1EC 55%, #F7F2EB 100%) fixed;
+}
+
+/* עיצוב: מבטל את הרקע הכחול שהדפדפן צובע בשדות שהוא מילא אוטומטית */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #F7FAF8 inset;
+  -webkit-text-fill-color: #16242A;
+  transition: background-color 9999s ease-out;
 }

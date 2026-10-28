@@ -87,7 +87,7 @@ const RefillStock = ({ prescription, onClose }: RefillStockProps) => {
 
             {serverError && <p className="text-error">{serverError}</p>}
             <div className="flex justify-end gap-2">
-                <Button variant="outlined" onClick={onClose} disabled={isSubmitting}>
+                <Button variant="soft" onClick={onClose} disabled={isSubmitting}> {/* שונה: soft כמו שאר כפתורי הביטול */}
                     ביטול
                 </Button>
                 <Button type="submit" variant="contained" disabled={isSubmitting} >

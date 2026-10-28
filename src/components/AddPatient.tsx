@@ -11,6 +11,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createPatient, getPatient, updatePatient } from "../api/patients"
 import axios from "axios"
+import { useSnackbar } from "notistack"
 interface AddPatientProps {
     onClose: () => void
     patientId?: string
@@ -30,6 +31,7 @@ const AddPatient = ({ onClose, patientId }: AddPatientProps) => {
         mode: 'onTouched',
         defaultValues: { email: '', password: '', fullName: '', birthDate: '' },
     })
+    const { enqueueSnackbar } = useSnackbar()
     const { data, isPending } = useQuery({
         queryKey: ['patient', patientId],
         queryFn: () => getPatient(patientId!),
@@ -64,6 +66,7 @@ const AddPatient = ({ onClose, patientId }: AddPatientProps) => {
                 queryClient.invalidateQueries({ queryKey: ['patients'] }),
                 ...(isEdit ? [queryClient.invalidateQueries({ queryKey: ['patient', patientId] })] : []),
             ])
+            if (isEdit) enqueueSnackbar('פרטי המטופל עודכנו', { variant: 'success' })
             onClose()
         } catch (error) {
             if (axios.isAxiosError<ApiError>(error)) {
@@ -212,10 +215,13 @@ const AddPatient = ({ onClose, patientId }: AddPatientProps) => {
 
             {serverError && <p className="text-error">{serverError}</p>}
 
+            {/* עיצוב: הכפתורים בשורה אחת אחרי קו מפריד – כמו בהדמיה */}
+            <div className="mt-2 flex flex-wrap gap-3 border-0 border-t border-solid border-[#EDF2EF] pt-5">
             <Button
                 type="submit"
                 variant="contained"
                 size="large"
+                sx={{ minHeight: 52, px: 4 }}
                 disabled={isSubmitting}
                 startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
             >
@@ -223,13 +229,16 @@ const AddPatient = ({ onClose, patientId }: AddPatientProps) => {
             </Button>
             <Button
                 type="button"
-                variant="outlined"
+                variant="soft" // עיצוב: "ביטול" כגלולה אפורה-בהירה
                 size="large"
+                sx={{ minHeight: 52, px: 3 }}
                 onClick={onClose}
                 disabled={isSubmitting}
             >
                 ביטול
-            </Button>        </form>
+            </Button>
+            </div>
+        </form>
     )
 }
 export default AddPatient

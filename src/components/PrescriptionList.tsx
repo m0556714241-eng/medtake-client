@@ -31,7 +31,7 @@ const PrescriptionList=({patientId,filters}:PrescriptionListProps)=>{
         return <Typography>עדיין אין מרשמים</Typography>
     }
     return (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data.map(
             res=><PrescriptionCard key={res.id} Prescription={res}></PrescriptionCard> /* תוקן: key לפי ה-id של המרשם, ולא של המטופל */
           )}

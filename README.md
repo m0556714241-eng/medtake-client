@@ -1,75 +1,89 @@
-# React + TypeScript + Vite
+# MedTake – מעקב תרופות למטפל ולמטופל
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MedTake היא אפליקציית ווב לניהול תרופות של מטופלים מבוגרים.
+**המטפל** (למשל בן משפחה) מנהל את המטופלים ואת המרשמים שלהם, ו**המטופל** רואה מה צריך לקחת היום ומסמן מה כבר לקח.
+שניהם רואים את אותו מצב בזמן אמת – מה נלקח, מה פוספס, ואיזו תרופה עומדת להיגמר.
 
-Currently, two official plugins are available:
+## שני תפקידים
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### מטפל (caregiver)
+- נרשם בעצמו במסך הכניסה ("הרשמה כמטפל").
+- **עמוד ניהול** – כל המטופלים שלו, עם עיגול התקדמות של היום, תגיות "פוספסה מנה" / "מלאי נמוך", חיפוש, מיון וסינון.
+- הוספה, עריכה ומחיקה של מטופלים (המטפל יוצר למטופל משתמש עם מייל וסיסמה).
+- **עמוד מטופל** – פרופיל, המנות של היום, ורשימת המרשמים עם חיפוש, סינון לפי סטטוס וצורה, ומיון.
+- הוספה ועריכה של מרשם (ימים, שעות, תאריכים, מלאי), חידוש מלאי, שינוי סטטוס (פעיל / מושהה / הסתיים) ומחיקה.
+- **פעמון התראות** – תרופות שהמלאי שלהן נמוך.
 
-## React Compiler
+### מטופל (patient)
+- נכנס עם המייל והסיסמה שהמטפל יצר עבורו.
+- **תצוגה יומית** – כל המנות של היום, וכפתור גדול "לקחתי" לכל מנה (לחיצה נוספת מבטלת).
+- **תצוגה שבועית** – שבעה כרטיסי ימים בצבעים (הכול נלקח / פוספסה מנה / היום / מתוכנן). לחיצה על יום פותחת אותו בתצוגה היומית.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## טכנולוגיות
 
-## Expanding the ESLint configuration
+| תחום | ספרייה |
+| --- | --- |
+| בסיס | React 19 + TypeScript (strict) + Vite |
+| ניתוב | React Router (`createBrowserRouter`, נתיבים מוגנים לפי תפקיד) |
+| נתונים מהשרת | TanStack React Query + axios |
+| טפסים | React Hook Form (`Controller`, `rules`, `useFieldArray`) |
+| עיצוב | MUI + Tailwind CSS, תמיכה מלאה בכיווניות RTL |
+| הודעות | notistack |
+| התחברות | JWT – הטוקן נשמר ונשלח אוטומטית בכל בקשה (axios interceptor), מצב המשתמש ב-Context |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+השרת נמצא בריפו נפרד (`medtake-server`): Node.js + Express + TypeScript + Prisma + PostgreSQL.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## הרצה מקומית
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+דרישות: Node.js 20 ומעלה, ושרת MedTake שרץ (מקומית או ב-Render).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+cp .env.example .env      # ב-Windows: copy .env.example .env
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+בקובץ `.env` מגדירים את כתובת השרת:
 
 ```
+VITE_API_URL=http://localhost:3000/api
+```
+
+פקודות נוספות:
+
+```bash
+npm run build     # בדיקת TypeScript ובנייה לתיקייה dist
+npm run lint      # בדיקת ESLint
+npm run preview   # הצגת הגרסה הבנויה
+```
+
+## משתמשי דוגמה
+
+הסיסמה של כולם: `Medtake123`
+
+| תפקיד | מייל |
+| --- | --- |
+| מטפל | `rachel@medtake.dev` |
+| מטופל | `avraham@medtake.dev` |
+
+## מבנה התיקיות
+
+```
+src/
+  api/          פונקציות שפונות לשרת (axios), אחת לכל משאב
+  components/   רכיבים: כרטיסים, רשימות, טפסים, חלונות
+  context/      AuthContext – המשתמש המחובר והטוקן
+  hooks/        hooks משותפים ל-React Query (מטופלים, מנות של יום, סיכום שבוע)
+  pages/        עמודים: כניסה, ניהול, מטופל, התרופות שלי, 404
+  routes/       הגדרת הנתיבים והגנה לפי תפקיד
+  types/        טיפוסי TypeScript של הנתונים מהשרת
+  utils/        תאריכים, תוויות בעברית וסגנונות משותפים
+```
+
+## החלטות עיקריות
+
+- **Context רק להתחברות.** כל שאר הנתונים מגיעים מהשרת דרך React Query, שמנהל טעינה, שגיאות ומטמון. אחרי כל שינוי מרעננים את המפתחות הרלוונטיים (`invalidateQueries`).
+- **השרת קובע מי המשתמש לפי הטוקן.** מטפל שולח `patientId` כדי לקרוא נתונים של מטופל מסוים; מטופל רואה רק את עצמו.
+- **המנות מחושבות בשרת** מתוך המרשמים הפעילים – הלקוח לא שומר רשימת מנות משלו.
+- **כל הטפסים בנויים עם React Hook Form – בכוונה, גם טופס של שדה אחד.** זו החלטה שלי לטובת עקביות: בכל מקום שבו המשתמש כותב ושולח (התחברות, הרשמה, מטופל, מרשם, חידוש מלאי, הודעה למטפל) יש אותה דרך עבודה – `useForm` עם `Controller`, בדיקות ב-`rules`, שגיאות מהשרת מוצגות מתחת לשדה עם `setError`, ו-`isSubmitting` נועל את הטופס בזמן השליחה.
+- **אישור לפני מחיקה**, והודעה רק כשהפעולה לא נראית על המסך.

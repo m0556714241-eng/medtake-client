@@ -5,7 +5,8 @@ const Layout = () => {
     return (
         <>
              <Header />
-            <main>
+            {/* עיצוב: עמודה מרכזית ברוחב קבוע, עם ריווח מהצדדים */}
+            <main className="mx-auto w-full max-w-[1180px] px-4 py-6 sm:px-8">
                 <Outlet />
             </main>
         </>

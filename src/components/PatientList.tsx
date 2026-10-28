@@ -1,5 +1,4 @@
-import { useQuery, keepPreviousData } from "@tanstack/react-query"
-import { getPatients } from "../api/patients"
+import { usePatients } from "../hooks/usePatients" // עיצוב: hook משותף במקום useQuery כאן
 import PatientCard from "../components/PatientCard"
 import type { PatientFilters } from "../types"
 import { useEffect } from "react"
@@ -15,13 +14,7 @@ interface PatientListProps {
 
 
 const PatientList = ({ filters, onEdit, onAdd, onEmpty }: PatientListProps) => {
-    const { data, isPending, isError, isPlaceholderData } = useQuery(
-        {
-            queryKey: ['patients', filters],
-            queryFn: () => getPatients(filters),
-            placeholderData: keepPreviousData,
-        }
-    )
+    const { data, isPending, isError, isPlaceholderData } = usePatients(filters)
     const hasFilters = !!filters.search || !!filters.lowStock || !!filters.missedToday
     const noPatientsAtAll = !!data && data.length === 0 && !hasFilters && !isPlaceholderData
     useEffect(() => {
@@ -48,7 +41,7 @@ const PatientList = ({ filters, onEdit, onAdd, onEmpty }: PatientListProps) => {
     )
 }
     return (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5"> {/* עיצוב: כרטיסים רחבים יותר, כמו בהדמיה */}
             {data.map(patient => (
                 <PatientCard key={patient.id} patient={patient} onEdit={onEdit} />
             ))}
