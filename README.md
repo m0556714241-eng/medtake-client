@@ -69,6 +69,15 @@ npm run lint      # בדיקת ESLint
 npm run preview   # הצגת הגרסה הבנויה
 ```
 
+## משתמשי דוגמה
+
+הסיסמה של כולם: `Medtake123`
+
+| תפקיד | מייל |
+| --- | --- |
+| מטפל | `rachel@medtake.dev` |
+| מטופל | `avraham@medtake.dev` (המטופל של רחל) |
+
 ## מבנה התיקיות
 
 ```
