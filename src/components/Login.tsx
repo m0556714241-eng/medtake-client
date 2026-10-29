@@ -11,11 +11,18 @@ import InputAdornment from "@mui/material/InputAdornment"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 
+// נוסף: משתמשי הדגמה לכניסה מהירה (נתונים מומצאים מה-seed של השרת – לא משתמשים אמיתיים)
+const demoUsers = [
+    { label: 'דמו – מטפלת (רחל)', email: 'rachel@medtake.dev', password: 'Medtake123' },
+    { label: 'דמו – מטופל (אברהם)', email: 'avraham@medtake.dev', password: 'Medtake123' },
+]
+
 const Login = () => {
     const { login } = useAuth()
     const navigate = useNavigate()
     const [serverError, setServerError] = useState<string | null>(null)
     const [showPassword, setShowPassword] = useState(false)
+    const [demoLoading, setDemoLoading] = useState<string | null>(null) // נוסף: המייל של כפתור הדמו שנלחץ
     const {
         control,
         handleSubmit,
@@ -105,6 +112,32 @@ const Login = () => {
             >
                 {isSubmitting ? 'מתחבר...' : 'התחברות'}
             </Button>
+
+            {/* נוסף: כניסה מהירה לדוגמה – משתמשת באותה onSubmit, כך שהניווט והשגיאות זהים להתחברות רגילה */}
+            <div className="mt-2 flex items-center gap-3 text-sm text-muted">
+                <span className="h-px flex-1 bg-[#E3ECE7]" />
+                או כניסה מהירה לדוגמה
+                <span className="h-px flex-1 bg-[#E3ECE7]" />
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {demoUsers.map(demo => (
+                    <Button
+                        key={demo.email}
+                        type="button"
+                        variant="soft"
+                        className="flex-1"
+                        disabled={isSubmitting || demoLoading !== null}
+                        onClick={async () => {
+                            setDemoLoading(demo.email)
+                            await onSubmit({ email: demo.email, password: demo.password })
+                            setDemoLoading(null)
+                        }}
+                        sx={{ minHeight: 46, fontWeight: 700, '&:hover': { backgroundColor: '#DDEBE3', color: 'primary.dark' } }} // בריחוף ירוק, לא כתום כמו "ביטול"
+                    >
+                        {demoLoading === demo.email ? 'מתחבר...' : demo.label}
+                    </Button>
+                ))}
+            </div>
         </form>
     )
 }
