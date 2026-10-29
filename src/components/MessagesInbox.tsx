@@ -5,6 +5,7 @@ import IconButton from "@mui/material/IconButton"
 import Badge from "@mui/material/Badge"
 import MailOutlineIcon from "@mui/icons-material/EmailOutlined"
 import Menu from "@mui/material/Menu"
+import Tooltip from "@mui/material/Tooltip"
 import Typography from "@mui/material/Typography" // נוסף: תוכן הרשימה
 import CloseIcon from "@mui/icons-material/Close"
 import { formatDate, formatTime } from "../utils/dates"
@@ -26,15 +27,19 @@ const MessagesInbox = () => {
     })
     return (
         <>
-            <IconButton
-                aria-label={`הודעות מהמטופלים (${messages.length})`}
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                sx={{ bgcolor: "#F2F6F4", borderRadius: "14px", color: "primary.dark" }}
-            >
-                <Badge badgeContent={messages.length} color="warning">
-                    <MailOutlineIcon />
-                </Badge>
-            </IconButton>
+            {/* הנפשה: הסבר בריחוף, הגדלה בעכבר, והמעטפה "קופצת" כשיש הודעות */}
+            <Tooltip title="הודעות מהמטופלים">
+                <IconButton
+                    aria-label={`הודעות מהמטופלים (${messages.length})`}
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    className={`header-icon ${messages.length > 0 ? 'has-news-mail' : ''}`}
+                    sx={{ bgcolor: "#F2F6F4", borderRadius: "14px", color: "primary.dark" }}
+                >
+                    <Badge badgeContent={messages.length} color="warning">
+                        <MailOutlineIcon />
+                    </Badge>
+                </IconButton>
+            </Tooltip>
             <Menu
                 anchorEl={anchorEl}
                 open={!!anchorEl}

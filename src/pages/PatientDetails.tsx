@@ -12,6 +12,8 @@ import PrescriptionList from "../components/PrescriptionList"
 import FiltersPrescription from "../components/FiltersPrescription"
 import AppDialog from "../components/AppDialog"
 import AddMedicine from "../components/AddMedicine"
+import Reveal from "../components/Reveal"
+import CardSkeleton from "../components/CardSkeleton"
 
 const PatientDetails = () => {
     const { id } = useParams()
@@ -23,7 +25,8 @@ const PatientDetails = () => {
         enabled: !!id
     })
     if (isPending) {
-        return <p> טוען...</p>
+        // הנפשה: שלד טעינה של הפרופיל והמנות במקום "טוען..."
+        return <CardSkeleton count={2} height={170} className="flex flex-col gap-6" />
     }
     if (isError)
 
@@ -46,12 +49,14 @@ const PatientDetails = () => {
             </Link>
             <PatientProfile patient={patient}></PatientProfile>
 
-            <section className="flex flex-col gap-4 rounded-[30px] border border-white/90 bg-white/80 p-6 shadow-[0_20px_40px_-30px_rgba(33,78,72,.45)]">
+            <section className="rise flex flex-col gap-4 rounded-[30px] border border-white/90 bg-white/80 p-6 shadow-[0_20px_40px_-30px_rgba(33,78,72,.45)]">
                 {/* עיצוב: הכותרת עברה לתוך DailyMedicine, שם כבר מחושב כמה נלקחו */}
                 <DailyMedicine patientId={patient.id} date={todayString()} canMark={false}
                     title={`היום, ${new Date().toLocaleDateString('he-IL', { weekday: 'long' })} ${formatDayMonth(todayString())}`}></DailyMedicine>
             </section>
 
+            {/* הנפשה: קטע המרשמים מחליק פנימה כשגוללים אליו */}
+            <Reveal>
             <section className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="m-0 text-[24px] font-extrabold">מרשמים</h2>
@@ -60,6 +65,7 @@ const PatientDetails = () => {
                 <FiltersPrescription filters={filters} onFiltersChange={setFilters}></FiltersPrescription>
                 <PrescriptionList patientId={patient.id} filters={filters} ></PrescriptionList>
             </section>
+            </Reveal>
 
             <AppDialog open={addPrescriptionOpen} title="הוספת מרשם" subtitle={`עבור ${patient.fullName}`} onClose={()=>setAddPrescriptionOpen(false)}>
                 <AddMedicine onClose={()=>setAddPrescriptionOpen(false)} patientId={patient.id}></AddMedicine>

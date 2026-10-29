@@ -53,7 +53,7 @@ const MyMedicines = () => {
             {/* עיצוב: כרטיס פתיחה ירוק עם ברכה ותאריך – כמו בהדמיה */}
             {/* עיצוב: הכרטיס הירוק מוצג רק בתצוגה היומית – בשבועית השבוע מקבל את כל המקום */}
             {view === 'daily' && (
-            <section className="flex flex-wrap items-center justify-between gap-6 rounded-[32px] bg-gradient-to-br from-primary via-[#2C6358] to-primary-dark px-8 py-7 text-white shadow-[0_24px_48px_-26px_rgba(33,78,72,.8)]">
+            <section className="drop-in flex flex-wrap items-center justify-between gap-6 rounded-[32px] bg-gradient-to-br from-primary via-[#2C6358] to-primary-dark px-8 py-7 text-white shadow-[0_24px_48px_-26px_rgba(33,78,72,.8)]">
                 <div>
                     <div className="opacity-85">{formatDate(date)}</div>
                     <h1 className="m-0 mt-1 text-[36px] font-extrabold leading-tight">{greeting()}, {user?.fullName}</h1> {/* עיצוב: ברכה לפי השעה */}

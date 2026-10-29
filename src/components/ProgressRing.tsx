@@ -37,6 +37,7 @@ const ProgressRing = ({
                     strokeWidth={stroke}
                     strokeLinecap="round"
                     strokeDasharray={`${circumference * part} ${circumference}`}
+                    className="ring-draw" // הנפשה: מתמלא מאפס כשהעיגול מופיע
                     transform={`rotate(-90 ${size / 2} ${size / 2})`}
                     style={{ transition: 'stroke-dasharray .4s ease' }}
                 />

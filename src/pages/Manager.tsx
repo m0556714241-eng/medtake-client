@@ -9,6 +9,7 @@ import { useAuth } from "../context/useAuth"
 import AddIcon from "@mui/icons-material/Add"
 import { usePatients } from "../hooks/usePatients"
 import { formatLongDate, greeting } from "../utils/dates"
+import CountUp from "../components/CountUp"
 
 const Manager = () => {
     const { user } = useAuth()
@@ -55,7 +56,7 @@ const Manager = () => {
         <div className="flex flex-col gap-6">
             {/* עיצוב: כרטיס פתיחה ירוק ולידו שלושה ריבועי מספרים – כמו בהדמיה */}
             <section className="flex flex-wrap items-start gap-5">
-                <div className="flex min-w-0 flex-[2_1_380px] flex-col gap-5 rounded-[28px] bg-gradient-to-br from-primary to-primary-dark px-8 py-7 text-white shadow-[0_24px_40px_-24px_rgba(33,78,72,.7)]">
+                <div className="drop-in flex min-w-0 flex-[2_1_380px] flex-col gap-5 rounded-[28px] bg-gradient-to-br from-primary to-primary-dark px-8 py-7 text-white shadow-[0_24px_40px_-24px_rgba(33,78,72,.7)]">
                     <div>
                         <div className="text-[15px] opacity-80">{formatLongDate()}</div>
                         <h1 className="m-0 mt-1 text-[32px] font-extrabold">{greeting()}, {user?.fullName}</h1>
@@ -66,13 +67,13 @@ const Manager = () => {
                         הוספת מטופל
                     </Button>
                 </div>
-                <div className="grid flex-[1_1_260px] grid-cols-3 gap-3">
+                <div className="stagger-side grid flex-[1_1_260px] grid-cols-3 gap-3"> {/* הנפשה: הריבועים נכנסים מהצד */}
                     {stats.map(stat => {
                         const isOn = stat.filter ? !!filters[stat.filter] : false
                         const content = (
                             <>
                                 <span className="h-2.5 w-2.5 rounded-full" style={{ background: stat.dot }} />
-                                <span className="text-[32px] font-extrabold leading-none tabular-nums">{stat.value}</span>
+                                <span className="text-[32px] font-extrabold leading-none tabular-nums"><CountUp value={stat.value} /></span> {/* הנפשה: המספר "סופר" עד הערך */}
                                 <span className="text-sm text-muted">{stat.label}</span>
                             </>
                         )

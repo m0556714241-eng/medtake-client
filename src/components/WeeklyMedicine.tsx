@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button"
 import DayCard from "./DayCard"
+import CardSkeleton from "./CardSkeleton"
 import { dayFullNames } from "../utils/labels"
 import type { ReactNode } from "react"
 import { formatDate, formatDayMonth } from "../utils/dates"
@@ -22,7 +23,8 @@ const legend = [
 const WeeklyMedicine = ({ date,onSelectDay, toggle }: WeeklyMedicineProps) => {
     const { data, isPending, isError, refetch, from, to, takenSoFar, totalSoFar } = useWeekSummary(date)
     if (isPending) {
-        return <p>טוען שבוע...</p>
+        // הנפשה: שלד טעינה – שבעה ימים אפורים
+        return <CardSkeleton count={7} height={180} className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7" />
     }
     if (isError) {
         return (
@@ -44,7 +46,7 @@ const WeeklyMedicine = ({ date,onSelectDay, toggle }: WeeklyMedicineProps) => {
                 </div>
                 {toggle}
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+            <div className="stagger grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7"> {/* הנפשה: הימים נכנסים במדרגות */}
                 {data.map((sammary,index)=>
                     <DayCard summary={sammary} key={sammary.date} dayName={dayFullNames[index]} onSelect={onSelectDay} ></DayCard>
                 )}

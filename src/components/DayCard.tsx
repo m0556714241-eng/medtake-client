@@ -34,7 +34,7 @@ const DayCard = ({ summary, dayName, onSelect }: DayCardProps) => {
     const isToday = summary.date === todayString()
     const look = isToday ? todayLook : looks[state]
     return (
-        <Card variant="outlined" sx={{
+        <Card variant="outlined" className="lift" sx={{ // הנפשה: מתרומם בריחוף עכבר
             bgcolor: look.bg,
             color: look.text,
             borderColor: look.border,

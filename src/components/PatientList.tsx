@@ -1,3 +1,4 @@
+import CardSkeleton from "./CardSkeleton"
 import { usePatients } from "../hooks/usePatients" // עיצוב: hook משותף במקום useQuery כאן
 import PatientCard from "../components/PatientCard"
 import type { PatientFilters } from "../types"
@@ -24,7 +25,8 @@ const PatientList = ({ filters, onEdit, onAdd, onEmpty }: PatientListProps) => {
     }, [noPatientsAtAll, onEmpty])
 
     if (isPending) {
-        return <p>טוען...</p>
+        // הנפשה: שלד טעינה במקום "טוען..."
+        return <CardSkeleton count={3} height={200} className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5" />
     }
     if (isError) {
         return <p>משהו השתבש</p>
@@ -41,7 +43,7 @@ const PatientList = ({ filters, onEdit, onAdd, onEmpty }: PatientListProps) => {
     )
 }
     return (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5"> {/* עיצוב: כרטיסים רחבים יותר, כמו בהדמיה */}
+        <div className="stagger grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5"> {/* הנפשה: הכרטיסים נכנסים במדרגות */} {/* עיצוב: כרטיסים רחבים יותר, כמו בהדמיה */}
             {data.map(patient => (
                 <PatientCard key={patient.id} patient={patient} onEdit={onEdit} />
             ))}

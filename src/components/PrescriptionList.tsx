@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import CardSkeleton from "./CardSkeleton"
 import type { PrescriptionFilters } from "../types"
 import { getPrescriptions } from "../api/prescriptions"
 import Button from "@mui/material/Button"
@@ -17,7 +18,8 @@ const PrescriptionList=({patientId,filters}:PrescriptionListProps)=>{
     })
 
     if (isPending) {
-        return <p>טוען מרשמים...</p>
+        // הנפשה: שלד טעינה במקום "טוען מרשמים..."
+        return <CardSkeleton count={3} height={240} />
     }
     if (isError) {
         return (
@@ -31,7 +33,7 @@ const PrescriptionList=({patientId,filters}:PrescriptionListProps)=>{
         return <Typography>עדיין אין מרשמים</Typography>
     }
     return (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3"> {/* הנפשה: הכרטיסים נכנסים במדרגות */}
           {data.map(
             res=><PrescriptionCard key={res.id} Prescription={res}></PrescriptionCard> /* תוקן: key לפי ה-id של המרשם, ולא של המטופל */
           )}

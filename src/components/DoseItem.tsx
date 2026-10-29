@@ -3,7 +3,7 @@ import type { Dose } from "../types"
 import Chip from "@mui/material/Chip"
 import { doseStatusLabels } from "../utils/labels"
 import FormIcon from "./FormIcon" // נוסף: אייקון לפי צורת התרופה
-import { formatTime, partOfDay } from "../utils/dates"
+import { formatTime, partOfDay, toDateString, todayString } from "../utils/dates"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { markIntake, unmarkIntake } from "../api/intakes"
 import Button from "@mui/material/Button" // שונה: כפתור גדול כמו בהדמיה במקום העיגול
@@ -47,6 +47,8 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                 : isNext ? 'bg-white shadow-[inset_0_0_0_3px_#39796B]'
                     : 'bg-white/80 shadow-[inset_0_0_0_1px_#E3ECE7]'
     const isTaken = !!dose.intakeId
+    // שונה: מנה של יום עתידי – אי אפשר לסמן "לקחתי" (מנה של היום אפשר, גם אם השעה עוד לא הגיעה)
+    const isFutureDay = toDateString(new Date(dose.scheduledAt)) > todayString()
 
     // עיצוב: אצל המטפלת (בלי סימון) – כרטיס קטן, כמה בשורה, כמו בהדמיה של עמוד המטופל
     if (!canMark) {
@@ -98,15 +100,20 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                 </div>
                 {isFailed && <Typography variant="caption" color="error">הפעולה נכשלה</Typography>}
             </div>
-            {/* שונה: כפתור גדול כמו בהדמיה במקום העיגול – לחיצה מסמנת 'לקחתי', לחיצה על 'נלקח' מבטלת */}
-            {(
+            {/* שונה: ביום עתידי – גלולה אפורה במקום הכפתור */}
+            {isFutureDay && !isTaken ? (
+                <span className="inline-flex min-h-[58px] min-w-[150px] items-center justify-center rounded-full bg-[#F2F6F4] px-5 text-center text-[17px] font-bold text-muted">
+                    עוד לא הגיע הזמן
+                </span>
+            ) : (
+            /* שונה: כפתור גדול כמו בהדמיה במקום העיגול – לחיצה מסמנת 'לקחתי', לחיצה על 'נלקח' מבטלת */
                 <Button
                     variant="contained"
                     onClick={() =>
                         dose.intakeId ? unMarkMutation.mutate(dose.intakeId) : markMutation.mutate()
                     }
                     disabled={isSaving}
-                    startIcon={isTaken ? <CheckIcon /> : undefined}
+                    startIcon={isTaken ? <CheckIcon className="pop-in" /> : undefined} // הנפשה: ה-✓ "קופץ" כשמסמנים
                     aria-label={isTaken ? 'ביטול סימון' : 'סימון כנלקח'}
                     sx={{
                         minHeight: 58,

@@ -64,6 +64,7 @@ const SendMessage = () => {
             <Button
                 onClick={() => setOpen(true)}
                 startIcon={<MailOutlineIcon />}
+                className="header-icon" // הנפשה: גדל קצת בריחוף עכבר, כמו הפעמון
                 sx={{ bgcolor: 'primary.light', color: 'primary.dark', fontWeight: 700 }}
             >
                 הודעה למטפל

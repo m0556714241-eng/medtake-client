@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import IconButton from "@mui/material/IconButton"
 import Badge from "@mui/material/Badge"
 import Menu from "@mui/material/Menu"
+import Tooltip from "@mui/material/Tooltip"
 import MenuItem from "@mui/material/MenuItem"
 import { useAuth } from "../context/useAuth"
 import NotificationsIcon from "@mui/icons-material/Notifications"
@@ -30,11 +31,16 @@ const LowStockAlerts = () => {
     }, [data, isCaregiver])
     return (
         <>
-            <IconButton aria-label="התראות מלאי" onClick={(e) => setOpenList(e.currentTarget)} sx={{ bgcolor: "#F2F6F4", borderRadius: "14px", color: "primary.dark" }}>
+            {/* הנפשה: הסבר בריחוף, הגדלה בעכבר, והפעמון "מצלצל" כשיש התראות */}
+            <Tooltip title="התראות מלאי">
+            <IconButton aria-label="התראות מלאי" onClick={(e) => setOpenList(e.currentTarget)}
+                className={`header-icon ${alerts.length > 0 ? 'has-news-bell' : ''}`}
+                sx={{ bgcolor: "#F2F6F4", borderRadius: "14px", color: "primary.dark" }}>
                 <Badge badgeContent={alerts.length} color="warning">
                     <NotificationsIcon /> 
                 </Badge>
             </IconButton>
+            </Tooltip>
             <Menu anchorEl={openList} onClose={() => setOpenList(null)} open={!!openList}>
                 {alerts.length === 0 ? ( 
                     <MenuItem disabled>אין התראות מלאי</MenuItem>

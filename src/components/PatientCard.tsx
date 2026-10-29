@@ -45,7 +45,7 @@ const PatientCard = ({ patient, onEdit }: PatientCardProps) => {
         setConfirmOpen(false)
     }
     return (
-        <Card sx={{ borderRadius: '26px' }}>
+        <Card className="lift" sx={{ borderRadius: '26px' }}> {/* הנפשה: מתרומם בריחוף עכבר */}
             {/* עיצוב: כמו בהדמיה – אות צבעונית, שם, ועיפרון ו-X קטנים משמאל; מתחת עיגול ההתקדמות של היום */}
             <CardContent className="flex flex-col gap-4" sx={{ p: '22px !important' }}>
                 <div className="flex items-center gap-3">

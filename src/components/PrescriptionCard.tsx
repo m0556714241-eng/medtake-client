@@ -58,7 +58,7 @@ const PrescriptionCard = ({ Prescription }: PrescriptionCardProps) => {
     const dayText = schedule.days.length == 7 ? "כל יום" :
         schedule.days.map(day => dayLabels[day]).join(' ')
     return (
-        <Card>
+        <Card className="lift"> {/* הנפשה: מתרומם בריחוף עכבר */}
             {/* עיצוב: סמל של כדור בריבוע ירוק, שם ומינון, סטטוס, ושורות מידע עם סמלים – כמו בהדמיה */}
             <CardContent className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">

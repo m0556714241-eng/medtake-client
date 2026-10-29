@@ -2,6 +2,7 @@ import { useDayDoses } from "../hooks/useDayDoses" // עיצוב: hook משות�
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import DoseItem from "./DoseItem"
+import CardSkeleton from "./CardSkeleton"
 import ProgressRing from "./ProgressRing"
 
 interface DailyMedicineProps {
@@ -22,7 +23,11 @@ const DailyMedicine = ({ patientId, date, canMark, title }: DailyMedicineProps) 
     )
 
     if (isPending) {
-        return <div className="flex flex-col gap-4">{titleRow()}<p className="m-0">טוען מנות...</p></div>
+        return <div className="flex flex-col gap-4">{titleRow()}
+            {/* הנפשה: שלד טעינה במקום "טוען מנות..." */}
+            <CardSkeleton count={canMark ? 3 : 4} height={canMark ? 96 : 150}
+                className={canMark ? 'flex flex-col gap-4' : 'grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3'} />
+        </div>
     }
     if (isError) {
         return (
@@ -54,7 +59,7 @@ const DailyMedicine = ({ patientId, date, canMark, title }: DailyMedicineProps) 
             </div>}
 
             {/* עיצוב: אצל המטופל – רשימה לרוחב; אצל המטפלת – כרטיסים קטנים זה ליד זה */}
-            <ul className={`m-0 list-none p-0 ${canMark ? 'flex flex-col gap-4' : 'grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3'}`}>
+            <ul className={`stagger m-0 list-none p-0 ${canMark ? 'flex flex-col gap-4' : 'grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3'}`}>
                 {data.map(dose => (
                     <DoseItem key={`${dose.prescriptionId}-${dose.scheduledAt}`} dose={dose} canMark={canMark} isNext={dose === nextDose} />
                 ))}
