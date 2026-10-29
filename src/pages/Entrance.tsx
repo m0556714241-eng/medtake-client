@@ -21,6 +21,8 @@ const Entrance = () => {
     <section className="rise w-full rounded-[40px] bg-gradient-to-br from-primary via-[#2C6358] to-primary-dark px-8 pb-28 pt-9 text-white">
         <div className="mx-auto flex max-w-[1000px] flex-wrap items-center justify-between gap-8">
             <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
+                {/* נוסף: שורת סלוגן מעל הכותרת */}
+                <div className="text-[20px] font-bold tracking-wide opacity-90">MedTake – למי שאיכות החיים חשובה לו</div> {/* שונה: סלוגן גדול יותר */}
                 <h1 className="m-0 text-[40px] font-extrabold leading-tight">כל התרופות במקום אחד</h1>
                 <p className="m-0 max-w-[460px] text-[19px] opacity-90">מה צריך לקחת היום, מה כבר נלקח, ומתי הגיע הזמן לחדש מלאי.</p>
                 <div className="stagger mt-1 flex flex-wrap gap-2"> {/* הנפשה: התגיות מופיעות אחת אחרי השנייה */}

@@ -115,6 +115,7 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                     disabled={isSaving}
                     startIcon={isTaken ? <CheckIcon className="pop-in" /> : undefined} // הנפשה: ה-✓ "קופץ" כשמסמנים
                     aria-label={isTaken ? 'ביטול סימון' : 'סימון כנלקח'}
+                    className="group" // שונה: לריחוף על "נלקח" – מחליף את הטקסט ל"ביטול סימון"
                     sx={{
                         minHeight: 58,
                         minWidth: 150,
@@ -126,9 +127,22 @@ const DoseItem = ({ dose, canMark, isNext = false }: DoseItemProps) => {
                             background: '#C2410C',
                             '&:hover': { background: '#9A3412' },
                         }),
+                        // שונה: "נלקח" – כפתור לבן ורגוע עם מסגרת ירוקה, כדי שיהיה שונה מ"לקחתי"
+                        ...(isTaken && {
+                            background: '#FFFFFF',
+                            color: 'primary.dark',
+                            boxShadow: 'inset 0 0 0 2px #39796B',
+                            '&:hover': { background: '#FFFFFF', boxShadow: 'inset 0 0 0 2px #214E48' },
+                        }),
                     }}
                 >
-                    {isTaken ? 'נלקח' : 'לקחתי'}
+                    {isTaken ? (
+                        <>
+                            {/* בריחוף או במקלדת – "ביטול סימון", כדי שיהיה ברור מה הלחיצה עושה */}
+                            <span className="group-hover:hidden group-focus-visible:hidden">נלקח</span>
+                            <span className="hidden text-[17px] group-hover:inline group-focus-visible:inline">ביטול סימון</span>
+                        </>
+                    ) : 'לקחתי'}
                 </Button>
             )}
         </li>
