@@ -45,7 +45,7 @@ const PatientCard = ({ patient, onEdit }: PatientCardProps) => {
         setConfirmOpen(false)
     }
     return (
-        <Card className="lift" sx={{ borderRadius: '26px' }}> {/* הנפשה: מתרומם בריחוף עכבר */}
+        <Card className="lift patient-card" sx={{ borderRadius: '26px' }}> {/* הנפשה: מתרומם בריחוף עכבר; patient-card – לצבע השם והחץ בריחוף */}
             {/* עיצוב: כמו בהדמיה – אות צבעונית, שם, ועיפרון ו-X קטנים משמאל; מתחת עיגול ההתקדמות של היום */}
             <CardContent className="flex flex-col gap-4" sx={{ p: '22px !important' }}>
                 <div className="flex items-center gap-3">
@@ -55,7 +55,7 @@ const PatientCard = ({ patient, onEdit }: PatientCardProps) => {
                             {firstLetter}
                         </Avatar>
                         <div className="min-w-0">
-                            <Typography sx={{ fontWeight: 800, fontSize: 19 }}>{patient.fullName}</Typography>
+                            <Typography className="patient-name" sx={{ fontWeight: 800, fontSize: 19 }}>{patient.fullName}</Typography>
                             <Typography color="text.secondary" variant="body2">
                                 גיל {patient.age ?? "לא ידוע"} · מצטרף מ-{formatDayMonth(toDateString(new Date(patient.createdAt)))}
                             </Typography>
@@ -94,6 +94,13 @@ const PatientCard = ({ patient, onEdit }: PatientCardProps) => {
                             )}
                         </div>
                     </div>
+                </Link>
+
+                {/* נוסף: שורת "צפייה בפרטים" – שיהיה ברור שאפשר להיכנס לכרטיס.
+                    מוסתרת ממקלדת וקורא מסך, כי השם כבר קישור לאותו עמוד */}
+                <Link to={`/manager/patients/${patient.id}`} tabIndex={-1} aria-hidden="true"
+                    className="flex items-center justify-end gap-1 font-bold text-primary no-underline">
+                    צפייה בפרטים <span className="details-arrow inline-block">←</span>
                 </Link>
             </CardContent>
             <ConfirmDialog

@@ -166,3 +166,9 @@ input:-webkit-autofill:focus {
   .has-news-bell svg, .has-news-mail svg, .has-news-bell .MuiBadge-badge, .has-news-mail .MuiBadge-badge { animation: none !important; }
   .header-icon.header-icon:hover { transform: none; }
 }
+
+/* כרטיס מטופל: בריחוף השם נצבע ירוק עם קו תחתון, והחץ של "צפייה בפרטים" זז קצת */
+.patient-card .patient-name, .patient-card .details-arrow { transition: color .2s ease, transform .2s ease; }
+.patient-card:hover .patient-name { color: var(--color-primary); text-decoration: underline; text-underline-offset: 4px; }
+.patient-card:hover .details-arrow { transform: translateX(-5px); }
+@media (prefers-reduced-motion: reduce) { .patient-card:hover .details-arrow { transform: none; } }
